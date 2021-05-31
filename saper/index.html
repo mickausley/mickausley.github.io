@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>S4P3R</title>
+
+  <style>
+    * {
+      font-family: sans-serif;
+      font-size: 20px;
+    }
+
+    body {
+      position: relative;
+    }
+
+    button:focus {
+      outline: none;
+    }
+
+    .btn {
+      /* position: absolute; */
+      display: block;
+      margin: 0 auto;
+      left: 45vw;
+      /* top: 30vh; */
+      height: 50px;
+      width: 100px;
+      background-color: white;
+      border: 2px solid black;
+      border-radius: 15px;
+    }
+
+    .timer {
+      /* position: absolute; */
+      text-align: center;
+      top: 200px;
+      left: 45vw;
+    }
+
+    .bombs {
+      /* position: absolute; */
+      text-align: center;
+      top: 165px;
+      left: 43vw;
+    }
+
+    label {
+      display: block;
+      width: 200px;
+      margin-bottom: 4px;
+      position: relative;
+      left: 45vw;
+    }
+
+    input {
+      width: 50px;
+      height: 30px;
+      font-size: 90%;
+      text-align: center;
+    }
+
+    .board {
+      position: relative;
+      top: 150px;
+      left: -10px;
+      margin: 0 auto;
+    }
+
+    .board {
+      border-collapse: collapse;
+      user-select: none;
+    }
+
+    .field {
+      height: 20px;
+      width: 20px;
+      font-size: 16px;
+      font-family: monospace;
+      font-weight: bold;
+      text-align: center;
+      border: 1px solid black;
+      background-image: url("img/klepa.png");
+      background-size: contain;
+    }
+
+    hr {
+      position: relative;
+      top: 190px;
+    }
+
+    .title {
+      position: relative;
+      top: 200px;
+      text-align: center;
+      margin: 0 auto;
+      margin-bottom: 5px;
+      font-size: 90%;
+    }
+
+    .recordList {
+      position: relative;
+      top: 200px;
+      left: -10px;
+      margin: 0 auto;
+      border-collapse: collapse;
+      user-select: none;
+    }
+
+    .recordCell {
+      border: 1px solid black;
+      font-size: 90%;
+      padding: 7px 10px 5px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <script>
+    // INPUTS
+    var div2 = document.createElement("div");
+    div2.style.id = "div2";
+    var plansza = document.createElement("div");
+
+    var lhg = document.createElement("label");
+    lhg.innerText = "Height: ";
+    // lhg.style.top = "5vh"
+    var hg = document.createElement("input");
+    hg.style.id = "hg";
+    lhg.appendChild(hg);
+    div2.appendChild(lhg);
+
+    var lwd = document.createElement("label");
+    lwd.innerText = "Width: ";
+    // lwd.style.top = "10vh"
+    var wd = document.createElement("input");
+    wd.style.id = "wd";
+    lwd.appendChild(wd);
+    div2.appendChild(lwd);
+
+    var lmines = document.createElement("label");
+    lmines.innerText = "Mines: ";
+    // lmines.style.top = "15vh"
+    var mines = document.createElement("input");
+    mines.style.id = "mines";
+    lmines.appendChild(mines);
+    div2.appendChild(lmines);
+
+    //CHECK
+    hg.onkeyup = function () {
+      setTimeout(function () {
+        if (isNaN(hg.value)) {
+          hg.value = "";
+        }
+      }, 1000);
+    };
+
+    wd.onkeyup = function () {
+      setTimeout(function () {
+        if (isNaN(wd.value)) {
+          wd.value = "";
+        }
+      }, 1000);
+    };
+
+    mines.onkeyup = function () {
+      setTimeout(function () {
+        if (isNaN(mines.value)) {
+          mines.value = "";
+        }
+      }, 1000);
+    };
+
+    // BUTTON
+    var but = document.createElement("button");
+    but.innerHTML = "Generuj";
+    but.classList.add("btn");
+    div2.appendChild(but);
+    var tab = [];
+    var clicks = 0;
+
+    // CLICK
+    but.onclick = function () {
+      if (hg.value != "" && wd.value != "" && mines.value != "") {
+        if (mines.value > hg.value * wd.value) alert("Za dużo bomb!");
+        else {
+          var t = 1;
+          tab = [];
+          clicks = 0;
+          plansza.innerHTML = ""
+          window.clearInterval(interval);
+          var timer = document.createElement("p");
+          plansza.appendChild(timer);
+          timer.classList.add("timer");
+          timer.innerHTML = "Grasz: 0sek";
+          var bombCounter = mines.value;
+          var bombs = document.createElement("p");
+          plansza.appendChild(bombs);
+          bombs.classList.add("bombs");
+          bombs.innerHTML = "Pozostało bomb: " + bombCounter;
+          var interval = window.setInterval(function () {
+            timer.innerHTML = "Grasz: " + t + "sek";
+            t++;
+          }, 1000);
+
+          // TABLE
+          var iloscWierszy = hg.value;
+          var iloscKolumn = wd.value;
+          var iloscMin = mines.value;
+
+          for (var i = 0; i < iloscWierszy; i++) {
+            tab[i] = [];
+          }
+
+          for (var i = 0; i < iloscWierszy; i++) {
+            for (var j = 0; j < iloscKolumn; j++) {
+              tab[i][j] = 0;
+            }
+          }
+
+          for (var i = 0; i < iloscMin; i++) {
+            var x = Math.floor(Math.random() * iloscWierszy);
+            var y = Math.floor(Math.random() * iloscKolumn);
+            while (tab[x][y] == 1) {
+              x = Math.floor(Math.random() * iloscWierszy);
+              y = Math.floor(Math.random() * iloscKolumn);
+            }
+            if (tab[x][y] == 0) tab[x][y] = 1;
+          }
+
+          // console.log(tab);
+
+          // BOARD
+          var board = document.createElement("table");
+          board.classList.add("board")
+          for (var ii = 0; ii < iloscWierszy; ii++) {
+            var tr = document.createElement("tr");
+            board.appendChild(tr);
+            for (var jj = 0; jj < iloscKolumn; jj++) {
+              var td = document.createElement("td");
+              td.classList.add("field")
+              td.setAttribute("stan", "undis");
+              td.setAttribute("bomb", tab[ii][jj]);
+              td.setAttribute("x", ii);
+              td.setAttribute("y", jj);
+              td.setAttribute("clicked", 0);
+              td.onclick = function () {
+                if (this.getAttribute("stan") != "flag") {
+                  if (this.getAttribute("bomb") != 1) {
+                    this.style.backgroundImage = "none";
+                    this.style.backgroundColor = "rgb(192, 192, 192)";
+                    var bombsAround = 0;
+                    var x = Number(this.getAttribute("x"));
+                    var y = Number(this.getAttribute("y"));
+                    for (var a = x - 1; a < x + 2; a++) {
+                      for (var b = y - 1; b < y + 2; b++) {
+                        try {
+                          if (tab[a][b] == 1)
+                            bombsAround++;
+                        } catch (err) { }
+                      }
+                    }
+                    if (bombsAround == 0) {
+                      this.innerHTML = ""
+                      //autoReveal(x, y, tab, clicks)
+                    } else if (bombsAround == 1) {
+                      this.innerHTML = bombsAround
+                      this.style.color = "blue";
+                    } else if (bombsAround == 2) {
+                      this.innerHTML = bombsAround
+                      this.style.color = "green";
+                    } else if (bombsAround == 3) {
+                      this.innerHTML = bombsAround
+                      this.style.color = "red";
+                    } else if (bombsAround == 4) {
+                      this.innerHTML = bombsAround
+                      this.style.color = "yellow";
+                    } else this.innerHTML = bombsAround
+                    if (Number(this.getAttribute("clicked")) == 0) {
+                      this.setAttribute("clicked", 1)
+                      clicks++;
+                    }
+                    if (clicks == iloscKolumn * iloscWierszy - iloscMin) {
+                      setTimeout(function () {
+                        var nick = prompt("Wygrywasz! Wpisz swój nick, aby zapisać rekord!");
+                        var d = new Date()
+                        d.setTime(d.getTime() + (100 * 24 * 60 * 60 * 1000))
+                        var expires = "expires=" + d.toUTCString();
+                        var tryb = iloscKolumn + "x" + iloscWierszy + "x" + iloscMin
+                        document.cookie = 'rekord' + new Date().toUTCString() + '=' + tryb + "|" + (t - 1) +
+                          '|' + nick +
+                          ';' + expires
+                        var blokada = document.querySelectorAll('td')
+                        for (var b = 0; b < iloscWierszy * iloscKolumn; b++) {
+                          blokada[b].onclick = null
+                          blokada[b].oncontextmenu = null
+                          window.clearInterval(interval);
+                        }
+                      }, 100);
+                    }
+                  } else {
+                    var remainingBomb = document.querySelectorAll(
+                      "[bomb='1']"
+                    );
+                    for (var b = 0; b < iloscMin; b++) {
+                      remainingBomb[b].style.backgroundImage =
+                        'url("img/pbomb.png")';
+                    }
+                    this.style.backgroundImage = 'url("img/bomb.png")';
+                    setTimeout(function () {
+                      alert("Przegrywasz! Aby rozpocząć ponownie wygeneruj nową planszę.");
+                      var blokada = document.querySelectorAll('td')
+                      for (var b = 0; b < iloscWierszy * iloscKolumn; b++) {
+                        blokada[b].onclick = null
+                        blokada[b].oncontextmenu = null
+                        window.clearInterval(interval);
+                      }
+                    }, 100);
+                  }
+                }
+              },
+                false
+              td.oncontextmenu = function (event) {
+                event.preventDefault();
+                switch (this.getAttribute("stan")) {
+                  case "undis":
+                    this.setAttribute("stan", "flag");
+                    this.style.backgroundImage = 'url("img/flaga.png")';
+                    bombCounter--;
+                    bombs.innerHTML = "Pozostało bomb: " + bombCounter;
+                    break;
+                  case "flag":
+                    this.setAttribute("stan", "qmark");
+                    this.style.backgroundImage = 'url("img/pyt.png")';
+                    bombCounter++;
+                    bombs.innerHTML = "Pozostało bomb: " + bombCounter;
+                    break;
+                  case "qmark":
+                    this.setAttribute("stan", "undis");
+                    this.style.backgroundImage = 'url("img/klepa.png")';
+                    break;
+                }
+              },
+                false
+
+              tr.appendChild(td);
+            }
+          }
+          plansza.appendChild(board);
+
+          // RECORDS
+          var tryb = iloscKolumn + "x" + iloscWierszy + "x" + iloscMin
+          var decodedCookie = decodeURIComponent(document.cookie);
+          var records = decodedCookie.split("; ")
+          for (var i = 0; i < records.length; i++) {
+            records[i] = records[i].slice(36)
+          }
+          var lista = records.filter(function (record) {
+            return record.includes(tryb)
+          })
+          var dwuwymiarowa = []
+          for (var i = 0; i < lista.length; i++) {
+            lista[i] = lista[i].slice(tryb.length + 1)
+            var index = lista[i].indexOf("|")
+            var first = lista[i].slice(0, index)
+            first = parseInt(first)
+            var second = lista[i].slice(index + 1)
+            dwuwymiarowa.push({
+              time: first,
+              nick: second,
+            })
+          }
+          dwuwymiarowa.sort(function compare(a, b) {
+            if (a.time < b.time) {
+              return -1;
+            }
+            if (a.time > b.time) {
+              return 1;
+            }
+            return 0;
+          })
+
+          //TABLE OF RECORDS
+          var recordList = document.createElement("table")
+          recordList.classList.add("recordList")
+          if (dwuwymiarowa.length > 10) {
+            var dlugoscListy = 10
+          } else {
+            var dlugoscListy = dwuwymiarowa.length
+          }
+          for (var ri = 0; ri < dlugoscListy + 1; ri++) {
+            var tr = document.createElement("tr");
+            recordList.appendChild(tr);
+            if (ri == 0) {
+              for (var rj = 0; rj < 3; rj++) {
+                var td = document.createElement("td")
+                td.classList.add("recordCell")
+                if (rj == 0) {
+                  td.innerHTML = "lp."
+                } else if (rj == 1) {
+                  td.innerHTML = "nick"
+                } else if (rj == 2) {
+                  td.innerHTML = "czas"
+                }
+                tr.style.backgroundColor = '#B5B5B5'
+                tr.appendChild(td)
+              }
+            } else {
+              for (var rj = 0; rj < 3; rj++) {
+                var td = document.createElement("td")
+                td.classList.add("recordCell")
+                if (rj == 0) {
+                  td.innerHTML = ri + "."
+                } else if (rj == 1) {
+                  td.innerHTML = dwuwymiarowa[ri - 1].nick
+                } else if (rj == 2) {
+                  if (dwuwymiarowa[ri - 1].time % 60 < 10)
+                    td.innerHTML = Math.floor(dwuwymiarowa[ri - 1].time / 60) + ':0' + dwuwymiarowa[ri - 1].time % 60
+                  else
+                    td.innerHTML = Math.floor(dwuwymiarowa[ri - 1].time / 60) + ':' + dwuwymiarowa[ri - 1].time % 60
+                }
+                tr.appendChild(td)
+              }
+            }
+          }
+          var title = document.createElement("div")
+          var hr = document.createElement("hr")
+          title.classList.add("title")
+          title.innerHTML = "Tabela rekordów dla trybu " + tryb
+          // plansza.appendChild(hr)
+          // plansza.appendChild(title)
+          // plansza.appendChild(recordList)
+        }
+      } else {
+        alert("Wpisz wszystkie wartości");
+      }
+
+    };
+    div2.appendChild(plansza)
+    document.body.appendChild(div2);
+
+    function autoReveal(x, y, tab, localClicks) {
+      for (var a = x - 1; a < x + 2; a++) {
+        for (var b = y - 1; b < y + 2; b++) {
+          try {
+            var obj = document.querySelector('[x="' + a + '"][y="' + b + '"')
+            console.log(obj)
+            obj.style.backgroundImage = "none";
+            obj.style.backgroundColor = "rgb(192, 192, 192)";
+            var bombsAround = 0;
+            for (var aa = a - 1; aa < a + 2; aa++) {
+              for (var bb = b - 1; bb < b + 2; bb++) {
+                //console.log(aa)
+                //console.log(bb)
+                try {
+                  if (tab[aa][bb] == 1)
+                    bombsAround++;
+                } catch (err) { }
+              }
+            }
+            console.log(bombsAround)
+            if (bombsAround == 0) {
+              obj.innerHTML = ""
+
+              // autoReveal(Number(obj.getAttribute("x")), Number(obj.getAttribute("y")), tab, clicks)
+            } else if (bombsAround == 1) {
+              obj.innerHTML = bombsAround
+              obj.style.color = "blue";
+              //autoReveal(obj.getAttribute("x"), obj.getAttribute("y"))
+            } else if (bombsAround == 2) {
+              obj.innerHTML = bombsAround
+              obj.style.color = "green";
+            } else if (bombsAround == 3) {
+              obj.innerHTML = bombsAround
+              obj.style.color = "red";
+            } else if (bombsAround == 4) {
+              obj.innerHTML = bombsAround
+              obj.style.color = "yellow";
+            } else obj.innerHTML = bombsAround
+
+            if (Number(obj.getAttribute("clicked")) == 0) {
+              obj.setAttribute("clicked", 1)
+              localClicks++;
+              clicks = localClicks;
+              console.log(clicks)
+            }
+            if (clicks == iloscKolumn * iloscWierszy - iloscMin) {
+              setTimeout(function () {
+                var nick = prompt("Wygrywasz! Wpisz swój nick, aby zapisać rekord!");
+                var d = new Date()
+                d.setTime(d.getTime() + (100 * 24 * 60 * 60 * 1000))
+                var expires = "expires=" + d.toUTCString();
+                var tryb = iloscKolumn + "x" + iloscWierszy + "x" + iloscMin
+                document.cookie = 'rekord' + new Date().toUTCString() + '=' + tryb + "|" + (t - 1) +
+                  '|' + nick +
+                  ';' + expires
+                var blokada = document.querySelectorAll('td')
+                for (var b = 0; b < iloscWierszy * iloscKolumn; b++) {
+                  blokada[b].onclick = null
+                  blokada[b].oncontextmenu = null
+                  window.clearInterval(interval);
+                }
+              }, 100);
+            }
+          } catch (err) { }
+        }
+      }
+    }
+  </script>
+</body>
+
+</html>
