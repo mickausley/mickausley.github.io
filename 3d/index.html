@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <!-- <link src="three.js" /> -->
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+    <script src="jquery.js"></script>
+    <script src="three.js"></script>
+    <script>
+        $(document).ready(function () {
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(
+                45, // kąt patrzenia kamery (FOV - field of view)
+                window.innerWidth / window.innerHeight, // proporcje widoku, powinny odpowiadać proporcjom naszego ekranu przeglądarki
+                0.1, // minimalna renderowana odległość
+                10000 // maksymalna renderowana odległość od kamery
+            );
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(0x000000);
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            $("#root").append(renderer.domElement);
+
+            var axes = new THREE.AxesHelper(1000);
+            scene.add(axes);
+
+            var geometry = new THREE.BoxGeometry(30, 30, 30);
+            var loader = new THREE.TextureLoader()
+            loader.setCrossOrigin("anonymous")
+            var materials = [];
+            materials.push(
+                new THREE.MeshBasicMaterial({
+                    side: THREE.DoubleSide,
+                    map: loader.load("mats/side.png")
+                })
+            );
+            materials.push(
+                new THREE.MeshBasicMaterial({
+                    side: THREE.DoubleSide,
+                    map: loader.load("mats/side.png")
+                })
+            );
+            materials.push(
+                new THREE.MeshBasicMaterial({
+                    side: THREE.DoubleSide,
+                    map: loader.load("mats/top.png")
+                })
+            );
+            materials.push(
+                new THREE.MeshBasicMaterial({
+                    side: THREE.DoubleSide,
+                    map: loader.load("mats/bot.png")
+                })
+            );
+            materials.push(
+                new THREE.MeshBasicMaterial({
+                    side: THREE.DoubleSide,
+                    map: loader.load("mats/side.png")
+                })
+            );
+            materials.push(
+                new THREE.MeshBasicMaterial({
+                    side: THREE.DoubleSide,
+                    map: loader.load("mats/side.png")
+                })
+            );
+            var tab = [];
+            var positions = [
+                [0, 0, 0],
+                [30, 0, 0],
+                [60, 0, 0],
+                [90, 0, 0],
+                [0, 0, 30],
+                [0, 0, 60],
+                [0, 0, 90],
+                [30, 0, 90],
+                [60, 0, 90],
+                [90, 0, 90],
+                [90, 0, 60],
+                [90, 0, 30],//poziom 0
+                [0, 30, 0],
+                [30, 30, 0],
+                [0, 30, 30],//poziom 1
+                [0, 60, 0],
+            ]
+
+            for (var i = 0; i < positions.length; i++) {
+                var cube = new THREE.Mesh(geometry, materials);
+                cube.position.set(positions[i][0], positions[i][1], positions[i][2])
+                scene.add(cube);
+                // tab.push(cube)
+            }
+            var clicked = false
+
+            var raycaster = new THREE.Raycaster(); // obiekt symulujący "rzucanie" promieni
+            var mouseVector = new THREE.Vector2() // ten wektor czyli pozycja w przestrzeni 2D na ekranie(x,y) wykorzystany będzie do określenie pozycji myszy na ekranie a potem przeliczenia na pozycje 3D
+            $(document).mousedown(function (event) {
+                mouseVector.x = (event.clientX / $(window).width()) * 2 - 1;
+                mouseVector.y = -(event.clientY / $(window).height()) * 2 + 1;
+                raycaster.setFromCamera(mouseVector, camera);
+                var intersects = raycaster.intersectObjects(scene.children);
+
+                if (intersects.length > 0) {
+                    clicked = true
+                    console.log(intersects[0].object)
+                    //zerowy w tablicy czyli najbliższy kamery obiekt to ten, którego potrzebujemy:
+                    cube = intersects[0].object
+                } else clicked = false
+            })
+            var pressed = false
+            var pulled = false
+            var keyCode =
+                $(document).keydown(function (event) {
+                    pressed = true
+                    keyCode = event.which;
+
+                    console.log(keyCode); // wyloguj kod klawisza
+
+                })
+
+            $(document).keyup(function (event) {
+                pressed = false
+                pulled = true
+                keyCode = event.which;
+
+            })
+            var angle = 0.8
+            camera.position.set(250, 100, 250);
+            camera.lookAt(scene.position);
+            function render() {
+                //w tym miejscu ustalamy wszelkie zmiany w projekcie (obrót, skalę, położenie obiektów)
+                //np zmieniająca się wartość rotacji obiektu
+
+                //mesh.rotation.y += 0.01;
+                if (clicked) {
+                    if (pulled) {
+                        switch (keyCode) {
+
+                            case 37:
+                                cube.position.x -= 30
+                                pulled = false
+                                break;
+                            case 39:
+                                cube.position.x += 30
+                                pulled = false
+                                break;
+                            case 38:
+                                cube.position.z -= 30
+                                pulled = false
+                                break;
+                            case 40:
+                                cube.position.z += 30
+                                pulled = false
+                                break;
+                            case 87:
+                                cube.position.y += 30
+                                pulled = false
+                                break;
+                            case 83:
+                                cube.position.y -= 30
+                                pulled = false
+                                break;
+                        }
+                    }
+                } else {
+                    if (pressed) {
+                        switch (keyCode) {
+
+                            case 65:
+                                angle += 0.05;
+                                camera.position.z = 350 * Math.cos(angle);
+                                camera.position.x = 350 * Math.sin(angle);
+                                camera.lookAt(scene.position);
+                                break;
+                            case 68:
+                                angle -= 0.05;
+                                camera.position.z = 350 * Math.cos(angle);
+                                camera.position.x = 350 * Math.sin(angle);
+                                camera.lookAt(scene.position);
+                                break;
+                            case 87:
+                                camera.position.y += 5
+                                camera.lookAt(scene.position);
+                                break;
+                            case 83:
+                                camera.position.y -= 5
+                                camera.lookAt(scene.position);
+                                break;
+                        }
+                    }
+                }
+
+                //wykonywanie funkcji bez końca, ok 60 fps jeśli pozwala na to wydajność maszyny
+
+                requestAnimationFrame(render);
+
+                // potwierdzenie w konsoli, że render się wykonuje
+
+                // console.log("render leci");
+
+                //ciągłe renderowanie / wyświetlanie widoku sceny naszą kamerą
+
+                renderer.render(scene, camera);
+            }
+            render();
+        });
+    </script>
+</head>
+
+<body>
+    <div id="root"></div>
+</body>
+
+</html>
