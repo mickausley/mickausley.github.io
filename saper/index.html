@@ -448,7 +448,7 @@
         for (var b = y - 1; b < y + 2; b++) {
           try {
             var obj = document.querySelector('[x="' + a + '"][y="' + b + '"')
-            console.log(obj)
+            // console.log(obj)
             obj.style.backgroundImage = "none";
             obj.style.backgroundColor = "rgb(192, 192, 192)";
             var bombsAround = 0;
@@ -462,7 +462,7 @@
                 } catch (err) { }
               }
             }
-            console.log(bombsAround)
+            // console.log(bombsAround)
             if (bombsAround == 0) {
               obj.innerHTML = ""
 
@@ -486,7 +486,7 @@
               obj.setAttribute("clicked", 1)
               localClicks++;
               clicks = localClicks;
-              console.log(clicks)
+              // console.log(clicks)
             }
             if (clicks == iloscKolumn * iloscWierszy - iloscMin) {
               setTimeout(function () {
