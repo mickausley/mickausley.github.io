@@ -30,49 +30,49 @@ class Field {
     if (Flags.flagStart == true) {
       //JEŚLI KULKA KLIKNIĘTA
       if (target.parentElement.className == "field")
-        console.log(event.target); // KULKA
-      // if (event.target.children[0]) console.log(event.target.children[0]);
-      // if (event.target.children[0] == undefined) console.log("und")
-      // if (event.target.innerHTML == "X") {
+        // console.log(event.target); // KULKA
+        // if (event.target.children[0]) console.log(event.target.children[0]);
+        // if (event.target.children[0] == undefined) console.log("und")
+        // if (event.target.innerHTML == "X") {
 
-      //JEŚLI KULKA KLIKNIĘTA
-      if (target.parentElement.className == "field") {
-        //SPRAWDZENIE CZY RUCH JEST MOŻLIWY
-        const X: number = Number(target.parentElement.dataset.x);
-        const Y: number = Number(target.parentElement.dataset.y);
-        let impossibleMove: boolean = true
-        if (Y > 0) {
-          if (Variables.arr[Y - 1][X] == 0) {
-            impossibleMove = false
+        //JEŚLI KULKA KLIKNIĘTA
+        if (target.parentElement.className == "field") {
+          //SPRAWDZENIE CZY RUCH JEST MOŻLIWY
+          const X: number = Number(target.parentElement.dataset.x);
+          const Y: number = Number(target.parentElement.dataset.y);
+          let impossibleMove: boolean = true
+          if (Y > 0) {
+            if (Variables.arr[Y - 1][X] == 0) {
+              impossibleMove = false
+            }
+          }
+
+          if (Y < Variables.sizes.height - 1) {
+            if (Variables.arr[Y + 1][X] == 0) {
+              impossibleMove = false
+            }
+          }
+
+          if (X > 0) {
+            if (Variables.arr[Y][X - 1] == 0) {
+              impossibleMove = false
+            }
+          }
+
+          if (X < Variables.sizes.width - 1) {
+            if (Variables.arr[Y][X + 1] == 0) {
+              impossibleMove = false
+            }
+          }
+          //JEŚLI RUCH JEST MOŻLIWY
+          if (!impossibleMove) {
+            Variables.ballToMove = target
+            target.classList.add("ballClicked");
+            Variables.startField = target.parentElement;
+            Variables.arr[parseInt(Variables.startField.dataset.y)][parseInt(Variables.startField.dataset.x)] = 1;
+            Flags.flagStart = false;
           }
         }
-
-        if (Y < Variables.sizes.height - 1) {
-          if (Variables.arr[Y + 1][X] == 0) {
-            impossibleMove = false
-          }
-        }
-
-        if (X > 0) {
-          if (Variables.arr[Y][X - 1] == 0) {
-            impossibleMove = false
-          }
-        }
-
-        if (X < Variables.sizes.width - 1) {
-          if (Variables.arr[Y][X + 1] == 0) {
-            impossibleMove = false
-          }
-        }
-        //JEŚLI RUCH JEST MOŻLIWY
-        if (!impossibleMove) {
-          Variables.ballToMove = target
-          target.classList.add("ballClicked");
-          Variables.startField = target.parentElement;
-          Variables.arr[parseInt(Variables.startField.dataset.y)][parseInt(Variables.startField.dataset.x)] = 1;
-          Flags.flagStart = false;
-        }
-      }
     }
     //JEŚLI SZUKANA META
     else if (Flags.flagStart == false) {
@@ -94,7 +94,7 @@ class Field {
         Variables.arr[parseInt(Variables.startField.dataset.y)][parseInt(Variables.startField.dataset.x)] = -10;
         Variables.startField = undefined
         Flags.flagStart = true;
-        console.log("odzn")
+        // console.log("odzn")
       }
       //JEŚLI KLIKNIĘTA INNA KULA
       else if (target.classList.contains("ball")) {
@@ -137,21 +137,21 @@ class Field {
     }
 
     //ZDARZENIE KLIKU W KONSOLI
-    if (target.parentElement.dataset.x)
-      console.log(
-        "clicked: x = " +
-        target.parentElement.dataset.x +
-        "; y = " +
-        target.parentElement.dataset.y
-      );
-    else {
-      console.log(
-        "clicked: x = " +
-        target.dataset.x +
-        "; y = " +
-        target.dataset.y
-      );
-    }
+    // if (target.parentElement.dataset.x)
+    //   console.log(
+    //     "clicked: x = " +
+    //     target.parentElement.dataset.x +
+    //     "; y = " +
+    //     target.parentElement.dataset.y
+    //   );
+    // else {
+    //   console.log(
+    //     "clicked: x = " +
+    //     target.dataset.x +
+    //     "; y = " +
+    //     target.dataset.y
+    //   );
+    // }
   }
 
   //ZBIERANIE PÓL DO SPRAWDZENIA
@@ -274,7 +274,7 @@ class Field {
           document.querySelector(`[data-x="${lowX}"][data-y="${lowY}"]`)
         );
       else {
-        console.log("nie da się")
+        // console.log("nie da się")
         Variables.ballToMove.classList.remove("ballClicked")
         Variables.arr[parseInt(Variables.startField.dataset.y)][parseInt(Variables.startField.dataset.x)] = -10;
 
@@ -290,7 +290,7 @@ class Field {
         }
       }
     } else {
-      console.log(Variables.path);
+      // console.log(Variables.path);
 
       setTimeout(() => {
         //CZYSZCZENIE SCIEZKI
@@ -380,7 +380,7 @@ class Board implements GameBoard {
     this.init();
   }
   private init(): void {
-    console.log("Initialization...")
+    // console.log("Initialization...")
   }
 
   create() {
