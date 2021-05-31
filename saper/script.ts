@@ -137,22 +137,22 @@ class Field {
     }
 
     //ZDARZENIE KLIKU W KONSOLI
-  //   if (target.parentElement.dataset.x)
-  //     console.log(
-  //       "clicked: x = " +
-  //       target.parentElement.dataset.x +
-  //       "; y = " +
-  //       target.parentElement.dataset.y
-  //     );
-  //   else {
-  //     console.log(
-  //       "clicked: x = " +
-  //       target.dataset.x +
-  //       "; y = " +
-  //       target.dataset.y
-  //     );
-  //   }
-  // }
+    // if (target.parentElement.dataset.x)
+    //   console.log(
+    //     "clicked: x = " +
+    //     target.parentElement.dataset.x +
+    //     "; y = " +
+    //     target.parentElement.dataset.y
+    //   );
+    // else {
+    //   console.log(
+    //     "clicked: x = " +
+    //     target.dataset.x +
+    //     "; y = " +
+    //     target.dataset.y
+    //   );
+    // }
+  }
 
   //ZBIERANIE PÓL DO SPRAWDZENIA
   private searchForNextProp(p: number): void {
