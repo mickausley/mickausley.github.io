@@ -12,6 +12,13 @@
             margin: 0;
             overflow: hidden;
         }
+
+        #info {
+            font-family: sans-serif;
+            color: aliceblue;
+            position: absolute;
+            margin: 5px;
+        }
     </style>
     <script src="jquery.js"></script>
     <script src="three.js"></script>
@@ -217,7 +224,16 @@
 </head>
 
 <body>
-    <div id="root"></div>
+    <div id="root">
+        <div id="info">
+            Instrukcja:<br />
+            - po wybraniu bloku:<br />
+            &nbsp;&nbsp;&nbsp;&middot;&nbsp;w, s - sterowanie wysokością<br />
+            &nbsp;&nbsp;&nbsp;&middot;&nbsp;strzałki - sterowanie położeniem<br />
+            - gdy żadne blok niewybrany:<br />
+            &nbsp;&nbsp;&nbsp;&middot;&nbsp;w, s, a, d - sterowanie kamerą
+        </div>
+    </div>
 </body>
 
 </html>
