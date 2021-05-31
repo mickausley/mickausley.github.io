@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>SNAKE</title>
+    <style>
+        body {
+            background-color: #1c1c1c
+        }
+
+        table {
+            border-collapse: collapse;
+            user-select: none;
+            margin: 0 auto;
+        }
+
+        td {
+            height: 30px;
+            width: 30px;
+            background-size: contain;
+        }
+
+        .pole {
+            background-image: url("img/pole.png");
+        }
+
+        .wall {
+            background-image: url("img/wall.png");
+        }
+
+        .fruit {
+            background-image: url("img/apple2.png");
+        }
+
+        .snake {
+            background-image: url("img/snake.png");
+        }
+
+        .snakeHeadUp {
+            background-image: url("img/snake_head_up.png");
+        }
+
+        .snakeHeadDown {
+            background-image: url("img/snake_head_down.png");
+        }
+
+        .snakeHeadLeft {
+            background-image: url("img/snake_head_left.png");
+        }
+
+        .snakeHeadRight {
+            background-image: url("img/snake_head_right.png");
+        }
+
+        .snakeEndUp {
+            background-image: url("img/snake_end_up.png");
+        }
+
+        .snakeEndDown {
+            background-image: url("img/snake_end_down.png");
+        }
+
+        .snakeEndLeft {
+            background-image: url("img/snake_end_left.png");
+            background-size: cover;
+        }
+
+        .snakeEndRight {
+            background-image: url("img/snake_end_right.png");
+            background-size: cover;
+        }
+
+        .snakeDownLeft {
+            background-image: url("img/snake_down_left.png");
+            background-size: cover;
+        }
+
+        .snakeDownRight {
+            background-image: url("img/snake_down_right.png");
+            background-size: cover;
+        }
+
+        .snakeUpLeft {
+            background-image: url("img/snake_up_left.png");
+            background-size: cover;
+        }
+
+        .snakeUpRight {
+            background-image: url("img/snake_up_right.png");
+            background-size: cover;
+        }
+    </style>
+    <script>
+        var notCoolingDown = true;
+        var fruitNotColected = true;
+    </script>
+
+</head>
+
+<body
+    onkeydown="if(notCoolingDown){keyboard(event); notCoolingDown=false; setTimeout(function () {notCoolingDown=true},(100))}">
+    <script>
+        var div = document.createElement("div");
+
+        //PLANSZA
+        var board = document.createElement("table");
+        for (var i = 0; i < 21; i++) {
+            var tr = document.createElement("tr");
+            board.appendChild(tr);
+            if (i == 0 || i == 20) {
+                for (var j = 0; j < 21; j++) {
+                    var td = document.createElement("td");
+                    td.classList.add("wall")
+                    td.setAttribute("x", i);
+                    td.setAttribute("y", j);
+                    tr.appendChild(td);
+                }
+            } else {
+                for (var j = 0; j < 21; j++) {
+                    var td = document.createElement("td");
+                    if (j == 0 || j == 20)
+                        td.classList.add("wall")
+                    else td.classList.add("pole")
+                    td.setAttribute("x", i);
+                    td.setAttribute("y", j);
+                    tr.appendChild(td);
+                }
+            }
+            div.appendChild(board);
+        }
+        document.body.appendChild(div);
+
+        //SNAKE
+
+        var position = []
+        var snake = document.querySelector('[x="10"][y="10"]');
+        var x = Number(snake.getAttribute("x"))
+        var y = Number(snake.getAttribute("y"))
+
+        position.unshift({
+            x: x,
+            y: y
+        })
+        snake.classList.add("snake");
+
+        var direction = ""
+        var moveInterval
+        var gameStatus = "stoped"
+
+        function keyboard(ev) {
+            if (ev.key == "w" || ev.key == "ArrowUp" && direction != 'down' && direction != 'up') {
+                direction = "up";
+            }
+            if (ev.key == "s" || ev.key == "ArrowDown" && direction != 'up' && direction != 'down') {
+                direction = "down";
+            }
+            if (ev.key == "a" || ev.key == "ArrowLeft" && direction != 'right' && direction != 'left') {
+                direction = "left";
+            }
+            if (ev.key == "d" || ev.key == "ArrowRight" && direction != 'left' && direction != 'right') {
+                direction = "right";
+            }
+
+            if (ev.key == "w" || ev.key == "ArrowUp" || ev.key == "s" || ev.key == "ArrowDown" || ev.key == "a" || ev
+                .key == "ArrowLeft" || ev.key == "d" || ev.key == "ArrowRight") {
+                if (gameStatus != "started") fruit()
+                gameStatus = "started"
+            }
+
+            clearInterval(moveInterval)
+            moveInterval = window.setInterval(function () {
+                moving();
+            }, 100);
+        }
+
+        //MOVING
+        function moving() {
+            for (var i = 0; i < position.length; i++) {
+                snake = document.querySelector(`[x="${position[i].x}"][y="${position[i].y}"]`);
+                snake.className = 'pole'
+            }
+
+            if (direction == "up") {
+                var x = position[0].x
+                var y = position[0].y
+                if (fruitNotColected) position.pop()
+                position.unshift({
+                    x: x - 1,
+                    y: y
+                })
+            }
+            if (direction == "down") {
+                var x = position[0].x
+                var y = position[0].y
+                if (fruitNotColected) position.pop()
+                position.unshift({
+                    x: x + 1,
+                    y: y
+                })
+            }
+            if (direction == "left") {
+                var x = position[0].x
+                var y = position[0].y
+                if (fruitNotColected) position.pop()
+                position.unshift({
+                    x: x,
+                    y: y - 1
+                })
+            }
+            if (direction == "right") {
+                var x = position[0].x
+                var y = position[0].y
+                if (fruitNotColected) position.pop()
+                position.unshift({
+                    x: x,
+                    y: y + 1
+                })
+            }
+            for (var i = 0; i < position.length; i++) {
+                snake = document.querySelector(`[x="${position[i].x}"][y="${position[i].y}"]`);
+
+                if (snake.classList.contains("wall") || snake.classList.contains('snake')) {
+                    clearInterval(moveInterval)
+                    console.log(snake.classList.contains("wall"))
+                    console.log(snake.classList.contains('snake'))
+                    console.log("x: " + position[i].x)
+                    console.log('y: ' + position[i].y)
+                    alert("Przegrałeś! Kliknij OK, aby zacząć nową grę!")
+                    location.reload();
+                } else {
+                    if (i == 0) {
+                        if (direction == "up") snake.classList.add("snakeHeadUp")
+                        if (direction == "down") snake.classList.add("snakeHeadDown")
+                        if (direction == "left") snake.classList.add("snakeHeadLeft")
+                        if (direction == "right") snake.classList.add("snakeHeadRight")
+                    }
+                    else if (i == position.length - 1) {
+                        if (position[i].x > position[i - 1].x) snake.classList.add('snakeEndUp')
+                        if (position[i].x < position[i - 1].x) snake.classList.add('snakeEndDown')
+                        if (position[i].y > position[i - 1].y) snake.classList.add('snakeEndLeft')
+                        if (position[i].y < position[i - 1].y) snake.classList.add('snakeEndRight')
+                    }
+                    else {
+                        if (position[i - 1].x < position[i + 1].x && position[i - 1].y > position[i + 1].y &&
+                            position[i - 1].x == position[i].x || position[i - 1].x > position[i + 1].x &&
+                            position[i - 1].y < position[i + 1].y && position[i - 1].y == position[i].y) snake.classList.add('snakeDownRight')
+                        else if (position[i - 1].x > position[i + 1].x && position[i - 1].y > position[i + 1].y &&
+                            position[i - 1].x == position[i].x || position[i - 1].x < position[i + 1].x &&
+                            position[i - 1].y < position[i + 1].y && position[i - 1].y == position[i].y) snake.classList.add('snakeUpRight')
+                        else if (position[i - 1].x > position[i + 1].x && position[i - 1].y < position[i + 1].y &&
+                            position[i - 1].x == position[i].x || position[i - 1].x < position[i + 1].x &&
+                            position[i - 1].y > position[i + 1].y && position[i - 1].y == position[i].y) snake.classList.add('snakeUpLeft')
+                        else if (position[i - 1].x < position[i + 1].x && position[i - 1].y < position[i + 1].y &&
+                            position[i - 1].x == position[i].x || position[i - 1].x > position[i + 1].x &&
+                            position[i - 1].y > position[i + 1].y && position[i - 1].y == position[i].y) snake.classList.add('snakeDownLeft')
+                        else snake.className = "snake";
+                    }
+                    if (i == 0) {
+                        if (snake.className.includes("fruit")) {
+                            fruitNotColected = false
+                            fruit();
+                        }
+                        else fruitNotColected = true
+                    }
+                }
+
+            }
+        }
+
+
+        //FRUITS
+        function fruit() {
+            var good = true
+            var generated = false
+            while (!generated) {
+                var fruitX = Math.floor(Math.random() * 19 + 1);
+                var fruitY = Math.floor(Math.random() * 19 + 1);
+                for (var i = 0; i < position.length; i++) {
+                    if (fruitX == position[i].x && fruitY == position[i].y) {
+                        good = false
+                    }
+                }
+                console.log(`dlugosc: ${position.length} - good: ${good}`)
+                if (good) {
+                    var fruit = document.querySelector(`[x="${fruitX}"][y="${fruitY}"]`)
+                    fruit.className = "fruit"
+                    generated = true
+                }
+                good = true
+            }
+        }
+    </script>
+
+</body>
+
+</html>
