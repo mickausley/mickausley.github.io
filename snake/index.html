@@ -224,10 +224,10 @@
 
                 if (snake.classList.contains("wall") || snake.classList.contains('snake')) {
                     clearInterval(moveInterval)
-                    console.log(snake.classList.contains("wall"))
-                    console.log(snake.classList.contains('snake'))
-                    console.log("x: " + position[i].x)
-                    console.log('y: ' + position[i].y)
+                    // console.log(snake.classList.contains("wall"))
+                    // console.log(snake.classList.contains('snake'))
+                    // console.log("x: " + position[i].x)
+                    // console.log('y: ' + position[i].y)
                     alert("Przegrałeś! Kliknij OK, aby zacząć nową grę!")
                     location.reload();
                 } else {
@@ -283,7 +283,7 @@
                         good = false
                     }
                 }
-                console.log(`dlugosc: ${position.length} - good: ${good}`)
+                // console.log(`dlugosc: ${position.length} - good: ${good}`)
                 if (good) {
                     var fruit = document.querySelector(`[x="${fruitX}"][y="${fruitY}"]`)
                     fruit.className = "fruit"
